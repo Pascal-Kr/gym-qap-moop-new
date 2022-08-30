@@ -2,7 +2,7 @@ import numpy as np
 import math
 import statistics
 
-class Helpfunctions():
+class Functions():
 
     def __init__(self, shape=None, dtype=np.float32):
         self.shape = shape

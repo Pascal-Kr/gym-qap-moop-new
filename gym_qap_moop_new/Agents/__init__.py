@@ -1,0 +1,1 @@
+from gym_qap_moop_new.Agents.Train_Agent import DQNAgent

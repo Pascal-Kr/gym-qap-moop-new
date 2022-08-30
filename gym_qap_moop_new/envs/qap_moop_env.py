@@ -12,28 +12,25 @@ from gym_flp import rewards
 from IPython.display import display, clear_output
 import anytree
 from anytree import Node, RenderTree, PreOrderIter, LevelOrderIter, LevelOrderGroupIter
-from gym_flp.envs.Hilfsfunktionen import Helpfunctions
+from gym_qap_moop_new.Helpfunctions.Helpfunctions import Functions
     
 
-class qapEnv(gym.Env):
-    metadata = {'render.modes': ['rgb_array', 'human']}  
+class QAPMOOPenv(gym.Env):
 
-    def __init__(self, mode=None, instance=None):
+    def __init__(self):
         self.transport_intensity = None
-        self.instance = instance
-        self.mode = mode
         
-        Distances = gym_flp.envs.Hilfsfunktionen.Helpfunctions()
-        Flow = gym_flp.envs.Hilfsfunktionen.Helpfunctions()
+        Distances = Functions()
+        Flow = Functions()
         self.F = Flow.Flowmatrix()
         self.n = len(self.F[0])
         self.x = math.ceil((math.sqrt(self.n)))
-        self.Noisedummy = gym_flp.envs.Hilfsfunktionen.Helpfunctions()
+        self.Noisedummy = Functions()
         self.Noise1 = self.Noisedummy.Noisematrix()
         self.Factory_Length = 60
         self.Factory_Width = 60
         self.Measuring_points = 17
-        Machine_centers = gym_flp.envs.Hilfsfunktionen.Helpfunctions()
+        Machine_centers = Functions()
         self.centers_x, self.centers_y = Machine_centers.Machine_centers(self.Factory_Length, self.Factory_Width, self.x)
         self.D = Distances.Distancematrixnew(self.centers_x, self.centers_y)
         
@@ -63,9 +60,9 @@ class qapEnv(gym.Env):
         self.Actual_Noisemin = np.inf
  
     
-        self.MHC = gym_flp.envs.Hilfsfunktionen.Helpfunctions()
-        self.Returnflow = gym_flp.envs.Hilfsfunktionen.Helpfunctions()
-        self.Reward = gym_flp.envs.Hilfsfunktionen.Helpfunctions() 
+        self.MHC = Functions()
+        self.Returnflow = Functions()
+        self.Reward = Functions() 
     
     def reset(self):
         self.step_counter = 0  #Zählt die Anzahl an durchgeführten Aktionen
