@@ -1,17 +1,10 @@
 import numpy as np
 import gym
-import gym_flp
 from gym import spaces
 from numpy.random import default_rng
-import pickle
-import os
 import math
 import matplotlib.pyplot as plt
 from PIL import Image
-from gym_flp import rewards
-from IPython.display import display, clear_output
-import anytree
-from anytree import Node, RenderTree, PreOrderIter, LevelOrderIter, LevelOrderGroupIter
 from gym_qap_moop_new.Helpfunctions.Helpfunctions import Functions
     
 
@@ -43,7 +36,7 @@ class QAPMOOPenv(gym.Env):
         self.max_steps = self.n - 1
 
         self.action_space = spaces.Discrete(int((self.n**2-self.n)*0.5)+1)
-        self.observation_space = spaces.Box(low = 0, high = 255, shape=(1, self.n, 3), dtype = np.uint8) # Image representation
+        self.observation_space = spaces.Box(low = 0, high = 255, shape=(1, self.n, 3), dtype = np.uint8) 
         self.actions = self.pairwiseExchange(self.n)
         
         # Initialize Environment with empty state and action
@@ -65,7 +58,7 @@ class QAPMOOPenv(gym.Env):
         self.Reward = Functions() 
     
     def reset(self):
-        self.step_counter = 0  #Zählt die Anzahl an durchgeführten Aktionen
+        self.step_counter = 0  
         self.state_1D = default_rng().choice(range(1,self.n+1), size=self.n, replace=False) 
         
         self.internal_state = self.state_1D.copy()
@@ -129,10 +122,8 @@ class QAPMOOPenv(gym.Env):
 
         if self.movingTargetRewardReturnflow == np.inf:
             self.movingTargetRewardReturnflow = Returnflow          
-        #self.last_Returnflow = Returnflow
         self.transformedReturnflow = ((Returnflow-self.Returnflowmin)/(self.Returnflowmax-self.Returnflowmin))
         self.Returnflowreward= (self.last_transformedReturnflow - self.transformedReturnflow)*100
-        #self.Returnflowreward= (self.last_Returnflow-Returnflow)
         self.last_transformedReturnflow = self.transformedReturnflow          
         self.last_Returnflow = Returnflow
         if Returnflow <= self.movingTargetRewardReturnflow:
@@ -141,20 +132,15 @@ class QAPMOOPenv(gym.Env):
      
         
         if self.movingTargetRewardNoise_score == np.inf:
-            self.movingTargetRewardNoise_score = Noise_score            
-        #self.last_Noise_score = Noise_score        
+            self.movingTargetRewardNoise_score = Noise_score                   
         self.transformedNoise_score = ((Noise_score-self.Noise_scoremin)/(self.Noise_scoremax-self.Noise_scoremin))        
         self.Noiserewardintervals= (self.last_transformedNoise_score - self.transformedNoise_score)*100
-        #self.Noiserewardintervals= self.last_Noise_score-Noise_score
         self.last_transformedNoise_score = self.transformedNoise_score
         
         if Noise_score<=self.movingTargetRewardNoise_score:
             self.Noiserewardintervals +=10
             self.movingTargetRewardNoise_score = Noise_score
-        #elif (Noise_score-self.last_Noise_score)>0:
-         #   self.Noiserewardintervals-=5
-        #self.last_Noise_score = Noise_score
-        
+
         reward = self.Reward.computeTotalreward(self.MHCreward, self.Returnflowreward, self.Noiserewardintervals)
         
         newState = np.array(self.get_image())
@@ -168,12 +154,9 @@ class QAPMOOPenv(gym.Env):
         
         return newState, reward, done, {'MHC': MHC, 'Return Flow': Returnflow,'Noise': Noise_score}
     
-    def render(self, mode=None):
-        if self.mode == 'rgb_array':
-            #img = Image.fromarray(self.state, 'RGB')     
-            img = self.get_image()
+    def render(self): 
+        img = self.get_image()
 
-        
         plt.imshow(img)
         plt.axis('off')
         plt.show()
@@ -243,7 +226,6 @@ class QAPMOOPenv(gym.Env):
             
             self.Noisepositions = self.Noisedummy.computeNoise(self.Noise1, random_state)
             Noise_measuring_points, Noise_average = self.Noisedummy.Noisecalculation(self.Factory_Length, self.Factory_Width, self.centers_x, self.centers_y, self.Noisepositions, self.n, self.Measuring_points)
-            self.Noise_Areas_Values, self.Noisemin, self.Noisemax = self.Noisedummy.Noise_Areas(Noise_measuring_points, self.n, self.Measuring_points)
             self.Noise_Areas_Values2, self.Noisemin2, self.Noisemax2 = self.Noisedummy.Noise_Areas2(Noise_measuring_points, self.n, self.Measuring_points)
             if Noise_average <= self.Noiseutopia:
                 self.Noiseutopia = Noise_average
