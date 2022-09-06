@@ -206,7 +206,7 @@ class DQNAgent(object):
 
 if __name__ == '__main__':
     env = gym.make('QAPMOOP-v0')
-    ename='Lärm100'
+    ename='Noise100'
     writer = SummaryWriter(log_dir=os.path.join('logs_pytorch', current_time + ename))
     episodes = 10
     agent = DQNAgent(episodes, gamma=0.8, epsilon=1, lr=0.0001,
@@ -254,15 +254,14 @@ if __name__ == '__main__':
         if not episode % Aggregate_Stats_Every:
             average_reward = sum(ep_rewards[-Aggregate_Stats_Every:])/len(ep_rewards[-Aggregate_Stats_Every:])
             min_reward = min(ep_rewards[-Aggregate_Stats_Every:])
-            #Minimum_costs = min(ep_Minimums[-Aggregate_Stats_Every:])
             max_reward = max(ep_rewards[-Aggregate_Stats_Every:])
             average_MHC = sum(ep_Costs[-Aggregate_Stats_Every:])/len(ep_Costs[-Aggregate_Stats_Every:])
             average_Returnflow = sum(ep_Returnflow[-Aggregate_Stats_Every:])/len(ep_rewards[-Aggregate_Stats_Every:])
             average_Noise_score = sum(ep_Noise_score[-Aggregate_Stats_Every:])/len(ep_rewards[-Aggregate_Stats_Every:])
             writer.add_scalar('Average Reward', average_reward, episode)
             writer.add_scalar('Average MHC', average_MHC, episode)
-            writer.add_scalar('Average Rückläufe', average_Returnflow,episode)
-            writer.add_scalar('Average Lärmpunktzahl', average_Noise_score,episode)
+            writer.add_scalar('Average Return Flow', average_Returnflow,episode)
+            writer.add_scalar('Average Noise score', average_Noise_score,episode)
             writer.add_scalar('Epsilon', epsilon,episode)
        
             # Save model
