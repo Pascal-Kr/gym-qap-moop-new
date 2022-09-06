@@ -42,7 +42,6 @@ class Functions():
             P[idx][val-1]=1
         return P
     
-
     
     def computeNoise(self, Noisematrix, s):
         P = self.permutationMatrix(s)
@@ -51,22 +50,16 @@ class Functions():
             #Noise for Machine x placed on Pos y
             for j in range(len(Noisematrix)):
                 if P[i,j]==1:
-                    Noiseposition[i]= Noisematrix[j]
-        
-                
+                    Noiseposition[i]= Noisematrix[j]       
         return Noiseposition
-    
-    
     
 
     def computeTotalreward(self, Value1, Value2, Value3):  #Weightings arbitrary adjustable
-        Weighting1 = 0      #MHC 0.4
-        Weighting2 = 0      #Return flow 0.2
-        Weighting3 = 1      #Noise 0.4
+        Weighting1 = 0      
+        Weighting2 = 0      
+        Weighting3 = 1      
         Reward = Weighting1 * Value1 + Weighting2 * Value2 + Weighting3 * Value3
         return Reward
-
-
 
 
     def Flowmatrix(self):
@@ -80,7 +73,7 @@ class Functions():
         F[0][5]=11
         F[0][6]=20
         F[0][7]=22
-        F[0][8]=19   #1
+        F[0][8]=19   
 
         F[1][0]=1
         F[1][1]=0
@@ -90,8 +83,7 @@ class Functions():
         F[1][5]=2
         F[1][6]=1       
         F[1][7]=1
-        F[1][8]=104   #10
-        
+        F[1][8]=104
         
         F[2][0]=2
         F[2][1]=3
@@ -101,9 +93,8 @@ class Functions():
         F[2][5]=17
         F[2][6]=100
         F[2][7]=1
-        F[2][8]=31   #31
+        F[2][8]=31  
 
-        
         F[3][0]=5
         F[3][1]=1
         F[3][2]=11
@@ -113,7 +104,6 @@ class Functions():
         F[3][6]=247
         F[3][7]=178
         F[3][8]=1
-
         
         F[4][0]=2
         F[4][1]=17
@@ -123,7 +113,7 @@ class Functions():
         F[4][5]=1
         F[4][6]=10
         F[4][7]=1
-        F[4][8]=79  #7
+        F[4][8]=79  
         
         F[5][0]=9
         F[5][1]=14
@@ -157,33 +147,29 @@ class Functions():
         
         F[8][0]=8    
         F[8][1]=11
-        F[8][2]=25 #2
-        F[8][3]=29   #3
+        F[8][2]=25
+        F[8][3]=29   
         F[8][4]=9
         F[8][5]=7
         F[8][6]=2
         F[8][7]=5
         F[8][8]=0        
 
-        
         return F
-    
-    
-    
     
     def Noisematrix(self):
         L = np.zeros(9)
 
-        L[0]=80  #Drehen    #80
-        L[1]=75  #Bohren    #75
-        L[2]=70  #Fräsen    #85
-        L[3]=95 #Sägen     #105   #95  #60
-        L[4]=70  #Lackieren   #70
-        L[5]=55  #Prüfen      #55
-        L[6]=63  #Warenausgang  #63
+        L[0]=80
+        L[1]=75
+        L[2]=70  
+        L[3]=95 
+        L[4]=70  
+        L[5]=55
+        L[6]=63  
         L[7]=72
-        L[8]=63  #
-        
+        L[8]=63  
+    
         return L
     
     def Machine_centers(self,L,W, Machine_numbers):
@@ -196,13 +182,11 @@ class Functions():
                Machine_centers_x.append(x_step_width + 2*M*x_step_width)      
                Machine_centers_y.append(y_step_width + 2*N*y_step_width)
 
-
-
        return Machine_centers_x, Machine_centers_y
    
     def Noisecalculation(self,L,W, MPx, MPy, Noise, Machine_numbers, Measuring_points):
         #Measuring points per row/column
-        x_step_width=L/(Measuring_points-2)  #15 Measuring points, sollten aber 17 sein
+        x_step_width=L/(Measuring_points-2)  
         y_step_width=L/(Measuring_points-2)
         Noise_total=[]
         Noise_Areas_numbers=Measuring_points-1
@@ -225,41 +209,11 @@ class Functions():
                 Noise_total.append(Noise_neu)
         Noise_average = statistics.mean(Noise_total)
 
-
         return Noise_total, Noise_average
         
     
-    
-    def Noise_Areas(self, Noise_total, Machine_numbers, Measuring_points):
-        Measuring_points=15
-        Dummycounter = 0
-        Noise_Areas_Values = []
-        Jump_Area_Value = 0
-        for k in range(1, Machine_numbers+1):   #9 Bereiche zu untersuchen
-            Jump_Area_Value += 5  #Verschiebung in x-Richtung zum nächsten Bereich  #Sprungbereich = math.ceil((math.sqrt(Maschinenanzahl)))
-            Noise_Values=[]
-            for m in range(math.ceil((math.sqrt(Machine_numbers)))+3):     #6 "Zeilen" pro Bereich
-                for l in range(Dummycounter,Dummycounter+6):                   #6 "Spalten" pro Bereich
-                    #print(l)
-                    Current_Noise_Value = Noise_total[l]
-                    Noise_Values.append(Current_Noise_Value)
-                Dummycounter+=Measuring_points
-            Noise_Value = statistics.mean(Noise_Values)
-            Noise_Areas_Values.append(Noise_Value)
-            Dummycounter = Jump_Area_Value
-            if k % 3 == 0:      #Nach oberen Bereich Dummy = 6
-                Jump_Area_Value += 65   #Messpunkte+1
-                Dummycounter = Jump_Area_Value
-        Noise_Min = min(Noise_Areas_Values)
-        Noise_Max = max(Noise_Areas_Values)
-        return Noise_Areas_Values, Noise_Min, Noise_Max
-    
-
-
-    
     def Distancematrixnew(self, MPx, MPy):
         D = np.zeros((9, 9))
-
         for i in range(9):
             for j in range(9):
                 D[i][j] = math.sqrt((MPx[j]-MPx[i])**2+(MPy[j]-MPy[i])**2)
@@ -314,11 +268,10 @@ class Functions():
         Noise_Areas_Values = []
         Jump_Area_Value = 0
         for k in range(1, 240):   
-            Jump_Area_Value += 1  #Verschiebung in x-Richtung zum nächsten Bereich  #Sprungbereich = math.ceil((math.sqrt(Maschinenanzahl)))
+            Jump_Area_Value += 1  
             Noise_Values=[]
             for m in range(2):     
-                for l in range(Dummycounter,Dummycounter+2):                   #6 "Spalten" pro Bereich
-                    #print(l)
+                for l in range(Dummycounter,Dummycounter+2):                  
                     Current_Noise_Value = Noise_total[l]
                     Noise_Values.append(Current_Noise_Value)
                 Dummycounter+=Noise_Areas_numbers
